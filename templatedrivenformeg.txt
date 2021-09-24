@@ -1,0 +1,195 @@
+<form #employeeform="ngForm" ngNativeValidate (ngSubmit)="saveEmp(employee)">
+    <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title"> Create Employee </h3>
+    </div>
+    <div class="panel-body">
+      <div class="form-group" [class.has-error]="name.invalid && name.touched" [class.has-success]="name.valid" >
+        <label for="name"> Full Name :</label>
+        <input required type="text" name="name" [(ngModel)]="employee.name"
+        #name="ngModel" id="name" class="form-control" >
+        <span class="help-block" *ngIf="name.invalid">
+         Name is Required
+        </span>
+      </div>
+       <!-- <div>      touched: {{name.touched}}    </div>
+      <div>      Untouched: {{name.untouched}}    </div>
+      <div>      Dirty: {{name.dirty}}    </div>
+      <div>      Pristine: {{name.pristine}}    </div>
+      <div>      Valid: {{name.valid}}    </div>
+      <div>      Invalid: {{name.invalid}}    </div>  -->
+  <br/>
+  <!-- <h3> Employee Form level Validations:</h3>
+      <div>      touched: {{employeeform.touched}}    </div>
+      <div>      Untouched: {{employeeform.untouched}}    </div>
+      <div>      Dirty: {{employeeform.dirty}}    </div>
+      <div>      Pristine: {{employeeform.pristine}}    </div>
+      <div>      Valid: {{employeeform.valid}}    </div>
+      <div>      Invalid: {{employeeform.invalid}}    </div> -->
+   
+      <div class="form-group" [class.has-error]="gender.touched && gender.invalid">
+          <label class="control-label"> Gender :</label>
+        <div class="form-control">
+            <label class="radio-inline">
+            <input type="radio" value="male" required #gender="ngModel" name="gender" [(ngModel)]="employee.gender" >Male
+          </label>
+          <label class="radio-inline">
+              <input type="radio" value="female" required name="gender" #gender="ngModel" [(ngModel)]="employee.gender" >Female
+            </label>
+            <span class="help-block" *ngIf="gender.touched && gender.invalid">
+              Gender is required
+            </span>
+         </div>
+       </div>
+        <div class="form-group" [class.has-error]="contactPreference.touched && contactPreference.invalid">
+            <label class="control-label"> Contact Preference :</label>
+            <div class="form-control">
+              <label class="radio-inline">
+              <input type="radio" value="pno" [required]="contactPreference.value=='pno'" name="contact" #contactPreference="ngModel"  [(ngModel)]="employee.contactPreference">Phone
+            </label>
+            <label class="radio-inline">
+                <input type="radio" value="email" [required]="contactPreference.value=='email'"  #contactPreference="ngModel" name="contact" [(ngModel)]="employee.contactPreference">Email
+              </label>
+           </div>
+           <span class="help-block" *ngIf="contactPreference.touched && contactPreference.invalid">
+            ContactPreference is required
+          </span>
+          </div>
+        <div class="form-group [class.has-error]=email.invalid && email.touched">
+            <label for="email" class="control-label"> Email :</label>
+            <input type="text" name="email"  [(ngModel)]="employee.email" #email="ngModel" 
+            class="form-control" required email>
+            <span class="help-block" *ngIf="email.errors?.required && email.touched">
+              Email is Required
+            </span>
+            <span class="help-block" *ngIf="email.errors?.email && email.touched">
+              Email is Invalid
+            </span>
+        </div>
+        <div class="form-group">
+              <label class="radio-inline"> PhoneNumber :</label>
+              <input type="text" name="phno" [(ngModel)]="employee.phonenumber" class="form-control">
+        </div>
+        <div class="form-group" [class.has-error]="isActive.touched && isActive.invalid">
+        <div class="form-control" >
+              <label class="checkbox-inline control-label" > 
+              <input type="checkbox"  name="isActive" [required]="employee.isActive==null" #isActive="ngModel" [(ngModel)]="employee.isActive" > IsActive: 
+              </label>
+        </div>
+        <span class="help-block" *ngIf="isActive.touched && isActive.errors?.required">
+          IsActive is Required
+        </span>
+      </div>
+        <br/>
+        <div class="form-control">
+              <label for="department"> Department :</label> 
+        </div>
+        <br/>
+        <div>
+              <select id="department" name="department" [(ngModel)]="employee.department" class="form-control" >
+                <!-- <option value="1"> Help Desk </option>
+                <option value="2"> HR </option>
+                <option value="3"> Payroll </option>
+                <option value="4"> IT </option> -->
+                <option *ngFor="let dept of departments" [value]="dept.id">
+                  {{dept.name}}
+                </option>
+              </select>
+        </div>
+        <div class="row">
+        <div class="form-group col-md-3">
+          <label for="dateOfBirth"> Date Of Birth :</label>
+          <!-- <input type="text"  placement="right" bsDatepicker  name="dateOfBirth"
+           [(ngModel)]="employee.dateOfBirth" id="dateOfBirth" class="form-control"-->
+           <input type="date" name="dateOfBirth" [(ngModel)]="employee.dateOfBirth" id="dateOfBirth" class="form-control">
+        </div> 
+      </div>
+      <div class="form-group">
+        <label for="photoPath"> Photo Path:</label>
+        <input type="text" name="photoPath" [(ngModel)]="employee.photoPath" id="photoPath" class="form-control">
+      </div>
+      <div>
+        <button type="button" (click)="togglePhotoPreview()"  class="btn btn-primary">
+          {{previewphoto? "Hide" : "Show "}} Preview
+        </button>
+      </div>
+      <div class="form-group">
+       <img [src]="employee.photoPath" height="200" width="200" *ngIf="previewphoto"/>
+      </div>
+      </div>
+      <div style="margin-left:500px;margin-bottom: 20px;">
+      <button type="submit" class="btn btn-primary" [disabled]="employeeform.invalid"> Save </button>
+    </div>
+  </div>
+  </form>
+  Angular Generated Form Model: {{employeeform.value |json}}
+  <br/>
+  Our Employee Model: {{employee |json }}
+
+add-emp.ts
+
+import { Component, OnInit } from '@angular/core';
+// import { EmployeeService } from '../employee.service';
+import { Employee } from '../Employee.Model';
+import { NgForm, NgFormSelectorWarning } from '@angular/forms';
+import { MockNgModuleResolver } from '@angular/compiler/testing';
+import {HttpClient} from '@angular/common/http';
+// import {DpDatePickerModule} from 'ng2-date-picker';
+// import { ToastrService } from 'ngx-toastr';
+import { Department } from '../Department.model';
+
+
+@Component({
+  selector: 'app-emp-add',
+  templateUrl: './emp-add.component.html',
+  styleUrls: ['./emp-add.component.css']
+})
+export class EmpAddComponent implements OnInit {
+  //bsConfig:Partial<BsDatepickerConfig>;
+  //dob:Date=new Date(2018,0,30);
+  
+  previewphoto=false;
+ gender="male";
+ contact="pno";
+ isActive=true;
+ department=2;
+ employee: Employee={
+   id:null,
+   name:null,
+   gender:null,
+   contactPreference:null,
+   isActive:null,
+   phonenumber:null,
+   photoPath:null,
+   dateOfBirth:null,
+   department:null
+
+ };
+ departments: Department[]=[
+ {id:1,name:"HelpDesk"},
+ {id:2,name:"HR"},
+{id:3,name:"IT"},
+{id:4,name:"Payroll"},
+{id:5,name:"admin"}
+]
+
+  constructor() { 
+  
+  }
+  togglePhotoPreview()
+{
+this.previewphoto=!this.previewphoto;
+}
+  ngOnInit() {
+  }
+
+  saveEmp(newEmployee:Employee):void
+  {
+    console.log(newEmployee);
+  }
+
+
+  }
+
+  
+    

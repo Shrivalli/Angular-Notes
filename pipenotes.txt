@@ -1,0 +1,138 @@
+Computer.component.html
+<div class="panel panel-primary">
+    <h1> List of Computers </h1>
+    
+      <div> 
+          <table class=table>
+          <!-- <tr *ngFor="let c of Computers|brandfilterPipe:brandname|purposefilterPipe:searchterm|budgetfilterPipe:searchbudget" style="margin-bottom:10px;"> -->
+            <tr *ngFor="let c of Computers">
+            <td>{{c.purpose}}</td>
+            <td> {{c.Brandname}}</td>
+            <td>{{c.price}}</td>
+          </tr>
+          </table>
+       </div>
+          
+    <div>
+      Enter the brand which you want
+      <input type="text" [(ngModel)]="brandname" id=txtbrand #brand>
+    </div>
+    <div>
+    Enter the Purpose for which you need the computer
+    <input  type="text" [(ngModel)]="searchterm" id=txtpurpose #purpose>
+    </div>
+    <div>
+    Enter the range of your budget
+    <input type="text" [(ngModel)]="searchbudget" id=txtbudget #budget>
+  </div>
+  <br/>
+  
+  <br/><br/>
+  <div style="text-align: center">
+    <input type="submit" class="btn btn-primary" value="Suggest" (click)="this.Computers=suggest(this.Computers,brand.value)"/>
+    <input type="submit" class="btn btn-danger" value="Reset" (click)="reset()"/>
+  </div>
+  </div>
+  
+  
+Computer-file-pipe.ts:
+import {Pipe,PipeTransform} from '@angular/core';
+import { computer } from './Computer.Model';
+
+@Pipe({
+  name:'brandfilterPipe'
+})
+export class brandfilterPipe implements PipeTransform{
+  transform(CPUs:computer[],brandname:string)
+  {
+    if(!CPUs||!brandname)
+    {
+      return CPUs;
+    }
+    return CPUs.filter((x=>x.Brandname.toLowerCase().indexOf(brandname.toLowerCase())!==-1));
+  }
+}
+@Pipe({
+  name:'purposefilterPipe'
+})
+export class purposefilterPipe implements PipeTransform{
+    transform(CPUs:computer[],searchterm:string)
+    {
+     if(!CPUs|| !searchterm)   
+   {
+       return CPUs;
+   }
+    return CPUs.filter((x=>x.purpose.toLowerCase().indexOf(searchterm.toLowerCase())!==-1));
+    }
+  }
+@Pipe({
+    name:'budgetfilterPipe'
+    })
+  export class budgetfilterPipe implements PipeTransform{
+    transform(CPUs:computer[],searchbudget:number)
+    {
+     if(!CPUs|| !searchbudget)   
+   {
+       return CPUs;
+   }
+    return CPUs.filter((x=>x.price<searchbudget));
+    }
+  }
+
+
+Method:
+import { Component, OnInit } from '@angular/core';
+import { computer } from './Computer.Model';
+
+@Component({
+  selector: 'app-computer',
+  templateUrl: './computer.component.html',
+  styleUrls: ['./computer.component.css']
+})
+export class ComputerComponent implements OnInit {
+  purpose:string;
+  budget:number;
+  searchTerm:string;
+  searchbudget:number;
+  searchbrand:string;
+  Computers:computer[]=
+  [
+    {purpose:'General',cputype:'CPU type1',RAMtype:'RAMtype1', processortype:'processortype1',Brandname:'Dell', price:9000 },
+    {purpose:'Gaming',cputype:'CPU type2',RAMtype:'RAMtype4', processortype:'processortype2',Brandname:'HP', price:12000 },
+    {purpose:'General',cputype:'CPU type1',RAMtype:'RAMtype3', processortype:'processortype3',Brandname:'Lenovo', price:16000 },
+    {purpose:'Business',cputype:'CPU type3',RAMtype:'RAMtype2', processortype:'processortype1',Brandname:'Apple', price:88000 },
+    {purpose:'General',cputype:'CPU type4',RAMtype:'RAMtype2', processortype:'processortype4',Brandname:'Acer', price:94000 },
+    {purpose:'Gaming',cputype:'CPU type1',RAMtype:'RAMtype2', processortype:'processortype1',Brandname:'Lenovo', price:36000 },
+    {purpose:'Business',cputype:'CPU type2',RAMtype:'RAMtype1', processortype:'processortype3',Brandname:'HP', price:56000 },
+    {purpose:'General',cputype:'CPU type3',RAMtype:'RAMtype3', processortype:'processortype4',Brandname:'Acer', price:76000 },
+    {purpose:'Gaming',cputype:'CPU type1',RAMtype:'RAMtype4', processortype:'processortype2',Brandname:'Lenovo', price:86000 },
+    {purpose:'Business',cputype:'CPU type2',RAMtype:'RAMtype3', processortype:'processortype4',Brandname:'Dell', price:35000 },
+    {purpose:'General',cputype:'CPU type4',RAMtype:'RAMtype4', processortype:'processortype4',Brandname:'HP', price:90000 },
+ 
+  ]
+  
+ constructor() { }
+
+  ngOnInit() {
+    
+    console.log(this.Computers)
+  }
+
+  public suggest(Computers:computer[],brand:string):computer[]
+  {
+    console.log('button clicked');
+    console.log(Computers);
+    // console.log(purpose);
+    //  console.log(budget);
+     console.log(brand);
+     return Computers.filter((x=>x.Brandname.toLowerCase().indexOf(brand.toLowerCase())!==-1));
+  }
+
+ public reset(brand:string,purpose:string,budget:number):void{
+   brand=null;
+   purpose=null;
+   budget=0;
+   
+ }
+
+}
